@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hate Speech Analysis</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            min-height: 100vh;
+            background: #121212; /* Dark background */
+            color: #f2f2f2; /* Light text */
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: rgba(18, 18, 18, 0.95);
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(255, 0, 0, 0.2);
+            padding: 30px 40px;
+            text-align: center;
+            width: 90%;
+            max-width: 1000px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #ff1a1a;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 5px rgba(255, 0, 0, 0.5);
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 12px;
+            margin-right: 10px;
+            font-size: 1rem;
+            border: 1px solid #555;
+            background: #1e1e1e;
+            color: #f2f2f2;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            border-color: #ff4d4d;
+            box-shadow: 0 0 8px rgba(255, 77, 77, 0.8);
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            background: linear-gradient(90deg, #ff1a1a, #ff4d4d);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background: linear-gradient(90deg, #ff4d4d, #ff1a1a);
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+            transform: translateY(-2px);
+        }
+
+        h3 {
+            margin-top: 30px;
+            font-size: 1.5rem;
+            color: #ff4d4d;
+        }
+
+        .table-container {
+            max-height: 600px;
+            overflow: hidden;
+            border: 1px solid #333;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #1e1e1e;
+            color: #f2f2f2;
+        }
+
+        table th, table td {
+            padding: 10px 15px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+
+        table th {
+            background: #ff1a1a;
+            color: #fff;
+        }
+
+        table tr:nth-child(even) {
+            background: #2a2a2a;
+        }
+
+        table tr:hover {
+            background: #3a3a3a;
+        }
+
+        .load-more {
+            margin-top: 20px;
+        }
+
+        footer {
+            margin-top: 20px;
+            font-size: 0.85rem;
+            color: #888;
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            input[type="text"] {
+                width: 100%;
+                margin: 10px 0;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            table th, table td {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+    <script>
+        let allComments = []; // Placeholder for all comments (to be fetched dynamically)
+        let visibleRows = 10; // Start with 10 visible comments
+
+        // Dynamically load all comments into the table
+        function loadAllComments() {
+            const tableBody = document.querySelector("#commentTable tbody");
+            tableBody.innerHTML = ""; // Clear existing rows
+            allComments.forEach(comment => tableBody.appendChild(comment)); // Load all rows
+            document.querySelector(".load-more").style.display = "none"; // Hide "Load More" button
+        }
+
+        // Simulate fetching all rows on page load
+        document.addEventListener("DOMContentLoaded", () => {
+            const tableRows = document.querySelectorAll("#commentTable tbody tr");
+            allComments.push(...tableRows); // Store all rows initially
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Hate Speech Analysis</h1>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="youtube_link" placeholder="Enter YouTube Link">
+            <button type="submit">Analyze</button>
+        </form>
+        
+        {% if charts %}
+            <h3>Results</h3>
+            <img src="{{ charts }}">
+
+            <h3>Sorted Abusive Comments</h3>
+            <div class="table-container">
+                <table id="commentTable">
+                    <thead>
+                        <tr>
+                            <th>Author</th>
+                            <th>Channel ID</th>
+                            <th>Comment</th>
+                            <th>Abusive Probability (%)</th>
+                            <th>Label</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for comment in sorted_abusive_comments %}
+                        <tr>
+                            <td>{{ comment.author }}</td>
+                            <td>{{ comment.channel }}</td>
+                            <td>{{ comment.comment }}</td>
+                            <td>{{ comment.abusive_probability }}</td>
+                            <td>{{ comment.label }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <button class="load-more" onclick="loadAllComments()">Load All Comments</button>
+        {% endif %}
+        <footer>
+            &copy; 2025 | Thank You For Using | Give Feedback To kailainathan2006@gmail.com
+        </footer>
+    </div>
+</body>
+</html>
