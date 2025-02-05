@@ -1,0 +1,5 @@
+transformers
+torch
+pandas
+youtube-comment-downloader
+django
