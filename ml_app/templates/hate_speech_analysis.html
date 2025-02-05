@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hate Speech Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         /* Global Styles */
         * {
@@ -13,33 +14,44 @@
         }
 
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Poppins', sans-serif;
             min-height: 100vh;
-            background: #121212; /* Dark background */
-            color: #f2f2f2; /* Light text */
+            background: linear-gradient(-45deg, #000000, #ff0000, #1a1a1a, #ff3333);
+            background-size: 400% 400%;
+            animation: gradientBG 12s ease infinite;
+            color: white;
             padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
+            text-align: center;
         }
 
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Container */
         .container {
-            background: rgba(18, 18, 18, 0.95);
+            background: rgba(255, 0, 0, 0.1);
+            backdrop-filter: blur(12px);
             border-radius: 15px;
-            box-shadow: 0 8px 30px rgba(255, 0, 0, 0.2);
+            box-shadow: 0 8px 30px rgba(255, 0, 0, 0.4);
             padding: 30px 40px;
-            text-align: center;
-            width: 90%;
-            max-width: 1000px;
+            width: 95%;
+            max-width: 1100px;
         }
 
         h1 {
             font-size: 2.5rem;
-            color: #ff1a1a;
+            color: #ff4444;
+            text-shadow: 2px 2px 10px rgba(255, 0, 0, 0.7);
             margin-bottom: 20px;
-            text-shadow: 2px 2px 5px rgba(255, 0, 0, 0.5);
         }
 
+        /* Form */
         form {
             margin-bottom: 20px;
         }
@@ -47,27 +59,25 @@
         input[type="text"] {
             width: 70%;
             padding: 12px;
-            margin-right: 10px;
             font-size: 1rem;
-            border: 1px solid #555;
-            background: #1e1e1e;
-            color: #f2f2f2;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
             border-radius: 5px;
             outline: none;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            transition: box-shadow 0.3s ease;
         }
 
         input[type="text"]:focus {
-            border-color: #ff4d4d;
-            box-shadow: 0 0 8px rgba(255, 77, 77, 0.8);
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.8);
         }
 
         button {
             padding: 12px 25px;
             font-size: 1rem;
             font-weight: bold;
-            color: #fff;
-            background: linear-gradient(90deg, #ff1a1a, #ff4d4d);
+            color: white;
+            background: linear-gradient(90deg, #ff0000, #ff4444);
             border: none;
             border-radius: 50px;
             cursor: pointer;
@@ -75,49 +85,66 @@
         }
 
         button:hover {
-            background: linear-gradient(90deg, #ff4d4d, #ff1a1a);
-            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.4);
+            background: linear-gradient(90deg, #ff4444, #ff0000);
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.5);
             transform: translateY(-2px);
         }
 
         h3 {
             margin-top: 30px;
             font-size: 1.5rem;
-            color: #ff4d4d;
+            color: #ff4444;
         }
 
+        /* Charts */
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        canvas {
+            max-width: 450px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        /* Glassmorphism Table */
         .table-container {
             max-height: 600px;
             overflow: hidden;
-            border: 1px solid #333;
-            border-radius: 10px;
             margin-top: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            background: #1e1e1e;
-            color: #f2f2f2;
+            color: white;
         }
 
         table th, table td {
-            padding: 10px 15px;
+            padding: 10px;
             text-align: left;
-            border-bottom: 1px solid #333;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         table th {
-            background: #ff1a1a;
-            color: #fff;
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
         }
 
         table tr:nth-child(even) {
-            background: #2a2a2a;
+            background: rgba(255, 255, 255, 0.1);
         }
 
         table tr:hover {
-            background: #3a3a3a;
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .load-more {
@@ -127,10 +154,10 @@
         footer {
             margin-top: 20px;
             font-size: 0.85rem;
-            color: #888;
+            color: rgba(255, 255, 255, 0.7);
         }
 
-        /* Media Queries */
+        /* Responsive */
         @media (max-width: 768px) {
             input[type="text"] {
                 width: 100%;
@@ -144,24 +171,41 @@
             table th, table td {
                 font-size: 0.9rem;
             }
+
+            .chart-container {
+                flex-direction: column;
+                align-items: center;
+            }
         }
     </style>
     <script>
-        let allComments = []; // Placeholder for all comments (to be fetched dynamically)
-        let visibleRows = 10; // Start with 10 visible comments
-
-        // Dynamically load all comments into the table
-        function loadAllComments() {
-            const tableBody = document.querySelector("#commentTable tbody");
-            tableBody.innerHTML = ""; // Clear existing rows
-            allComments.forEach(comment => tableBody.appendChild(comment)); // Load all rows
-            document.querySelector(".load-more").style.display = "none"; // Hide "Load More" button
-        }
-
-        // Simulate fetching all rows on page load
         document.addEventListener("DOMContentLoaded", () => {
-            const tableRows = document.querySelectorAll("#commentTable tbody tr");
-            allComments.push(...tableRows); // Store all rows initially
+            const ctxBar = document.getElementById("barChart").getContext("2d");
+            const ctxPie = document.getElementById("pieChart").getContext("2d");
+
+            new Chart(ctxBar, {
+                type: "bar",
+                data: {
+                    labels: ["Neutral", "Offensive", "Hate Speech"],
+                    datasets: [{
+                        label: "Comment Analysis",
+                        data: [40, 35, 25], // Example values
+                        backgroundColor: ["rgba(255, 255, 255, 0.5)", "rgba(255, 77, 77, 0.8)", "rgba(255, 0, 0, 0.9)"],
+                        borderWidth: 1
+                    }]
+                }
+            });
+
+            new Chart(ctxPie, {
+                type: "pie",
+                data: {
+                    labels: ["Neutral", "Offensive", "Hate Speech"],
+                    datasets: [{
+                        data: [40, 35, 25],
+                        backgroundColor: ["rgba(255, 255, 255, 0.5)", "rgba(255, 77, 77, 0.8)", "rgba(255, 0, 0, 0.9)"],
+                    }]
+                }
+            });
         });
     </script>
 </head>
@@ -176,7 +220,10 @@
         
         {% if charts %}
             <h3>Results</h3>
-            <img src="{{ charts }}">
+            <div class="chart-container">
+                <canvas id="barChart"></canvas>
+                <canvas id="pieChart"></canvas>
+            </div>
 
             <h3>Sorted Abusive Comments</h3>
             <div class="table-container">
@@ -203,11 +250,8 @@
                     </tbody>
                 </table>
             </div>
-            <button class="load-more" onclick="loadAllComments()">Load All Comments</button>
         {% endif %}
-        <footer>
-            &copy; 2025 | Thank You For Using | Give Feedback To kailainathan2006@gmail.com
-        </footer>
+        <footer>© 2025 | Thank You For Using | Feedback: kailainathan2006@gmail.com</footer>
     </div>
 </body>
 </html>

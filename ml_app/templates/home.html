@@ -3,8 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home - YouTube Analysis</title>
+    <title>YouTube Analysis Hub</title>
     <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #ff4b4b, #ffffff);
+            border-radius: 4px;
+        }
+
         /* Global Styles */
         * {
             margin: 0;
@@ -12,100 +24,214 @@
             box-sizing: border-box;
         }
 
+        /* Animated Background */
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Poppins', sans-serif;
             min-height: 100vh;
+            background: linear-gradient(-45deg, #ff0000, #ffffff, #ff4d4d, #ffffff);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
+            color: black; /* Constant black text */
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #74ebd5, #9face6); /* Gradient Background */
-            background-size: cover;
-            background-attachment: fixed;
-            color: #333;
+            text-align: center;
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        .container {
-            background: rgba(255, 255, 255, 0.8); /* Transparent Box */
-            border-radius: 15px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-            padding: 30px 40px;
-            text-align: center;
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Navbar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.2rem 5%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .nav-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #ff4b4b, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: black; /* Constant black text */
+            text-decoration: none; /* Remove underline */
+            font-size: 1rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: black;
+        }
+
+        /* Glassmorphism Container (Stronger Effect) */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(25px) saturate(250%);
+            border-radius: 30px;
+            padding: 5rem;
+            margin-top: 100px;
+            max-width: 900px;
             width: 90%;
-            max-width: 500px;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.2), inset 0 0 30px rgba(255, 255, 255, 0.5);
+            border: 2px solid rgba(255,255,255,0.3);
+            animation: fadeIn 1s ease-in-out, floatEffect 5s infinite ease-in-out;
+            text-align: center;
+            color: black; /* Ensure all text is black */
+        }
+
+        /* Floating Animation */
+        @keyframes floatEffect {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
         }
 
         h1 {
-            font-size: 2.5rem;
-            color: #444;
-            margin-bottom: 20px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            font-size: 3.5rem;
+            margin-bottom: 2rem;
+            color: black; /* Constant black text */
         }
 
-        p {
-            font-size: 1rem;
-            color: #666;
-            margin-bottom: 30px;
+        /* Analysis Options */
+        .analysis-options {
+            display: grid;
+            gap: 2rem;
+            width: 100%;
         }
 
-        a {
-            display: block;
-            margin: 15px auto;
-            padding: 12px 25px;
+        .analysis-card {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 2rem;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             font-size: 1.2rem;
-            font-weight: bold;
-            color: #fff;
-            background: linear-gradient(90deg, #4facfe, #00f2fe); /* Gradient Button */
-            text-decoration: none;
-            border-radius: 50px;
-            transition: all 0.3s ease-in-out;
-            max-width: 250px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+            text-decoration: none; /* Remove underline */
         }
 
-        a:hover {
-            background: linear-gradient(90deg, #00f2fe, #4facfe); /* Reverse Gradient */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            transform: translateY(-2px);
+        /* Ensuring Text is Always Visible */
+        .analysis-card h2, .analysis-card p {
+            color: black; /* Constant black text */
+            text-decoration: none; /* Remove underline */
+        }
+
+        /* Interactive Hover Effects */
+        .analysis-card:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Light Glow Animation on Hover */
+        .analysis-card::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 10%, transparent 70%);
+            transform: scale(0);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .analysis-card:hover::before {
+            transform: scale(1);
         }
 
         footer {
-            margin-top: 20px;
-            font-size: 0.85rem;
-            color: #888;
+            margin-top: 3rem;
+            text-align: center;
+            color: black; /* Constant black text */
         }
 
-        /* Media Queries for Responsiveness */
+        /* Responsive Design */
         @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
+            .navbar {
+                padding: 1rem 5%;
             }
 
-            a {
-                font-size: 1rem;
-                padding: 10px 20px;
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .glass-card {
+                width: 95%;
+                padding: 3rem;
+            }
+
+            h1 {
+                font-size: 2.8rem;
             }
         }
 
         @media (max-width: 480px) {
-            h1 {
-                font-size: 1.8rem;
+            .nav-links {
+                display: none;
             }
 
-            a {
-                font-size: 0.9rem;
-                padding: 8px 15px;
+            .glass-card {
+                margin: 1rem 0;
+                padding: 2rem;
+            }
+
+            h1 {
+                font-size: 2.5rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Welcome to YouTube Analysis</h1>
-        <p>Choose an analysis type to get started:</p>
-        <a href="/youtube/sentiment/">Sentiment Analysis</a>
-        <a href="/youtube/hate_speech/">Hate Speech Detection</a>
-        <footer>
-            &copy; 2025 | Thank You For Using | Give Feedback To kailainathan2006@gmail.com
-        </footer>
+    <nav class="navbar">
+        <div class="nav-logo">YT Insight</div>
+        <div class="nav-links">
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+
+    <div class="glass-card">
+        <h1>YouTube Analysis Suite</h1>
+        <div class="analysis-options">
+            <a href="/youtube/sentiment/" class="analysis-card">
+                <h2>🎭 Sentiment Analysis</h2>
+                <p>Discover emotional trends in YouTube comments</p>
+            </a>
+            <a href="/youtube/hate_speech/" class="analysis-card">
+                <h2>🛡️ Hate Speech Detection</h2>
+                <p>Identify and analyze harmful content patterns</p>
+            </a>
+        </div>
     </div>
+
+    <footer>© 2025 YT Insight | Feedback: kailainathan2006@gmail.com</footer>
 </body>
 </html>

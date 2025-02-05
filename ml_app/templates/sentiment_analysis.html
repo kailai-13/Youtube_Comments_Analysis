@@ -4,157 +4,134 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sentiment Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Global Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        /* Previous styles remain the same until the table section */
 
-        body {
-            font-family: 'Arial', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: linear-gradient(135deg, #ff9a9e, #fad0c4); /* Gradient Background */
-            background-size: cover;
-            background-attachment: fixed;
-            color: #333;
-            padding: 20px;
-        }
-
-        .container {
-            background: rgba(255, 255, 255, 0.85); /* Transparent Box */
-            border-radius: 15px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-            padding: 30px 40px;
-            text-align: center;
-            width: 90%;
-            max-width: 800px;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            color: #444;
-            margin-bottom: 20px;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-        }
-
-        form {
-            margin-bottom: 20px;
-        }
-
-        input[type="text"] {
-            width: 70%;
-            padding: 12px;
-            margin-right: 10px;
-            font-size: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            outline: none;
-            transition: border-color 0.3s ease;
-        }
-
-        input[type="text"]:focus {
-            border-color: #ff6b6b;
-        }
-
-        button {
-            padding: 12px 25px;
-            font-size: 1rem;
-            font-weight: bold;
-            color: #fff;
-            background: linear-gradient(90deg, #ff758c, #ff7eb3); /* Gradient Button */
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease-in-out;
-        }
-
-        button:hover {
-            background: linear-gradient(90deg, #ff7eb3, #ff758c); /* Reverse Gradient */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            transform: translateY(-2px);
-        }
-
-        h3 {
-            margin-top: 30px;
-            font-size: 1.5rem;
-            color: #444;
+        /* Updated Glassmorphism Table Styles */
+        .table-container {
+            max-height: 600px;
+            overflow-y: auto;
+            margin-top: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(20px);
+            background: rgba(255, 255, 255, 0.3);
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         table {
             width: 100%;
-            margin-top: 20px;
             border-collapse: collapse;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
-            overflow: hidden;
+            color: #333; /* Dark text for better contrast */
         }
 
         table th, table td {
-            padding: 10px 15px;
+            padding: 12px 15px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         table th {
-            background: #ff7eb3;
-            color: #fff;
+            background: rgba(255, 105, 180, 0.8);
+            color: white;
+            position: sticky;
+            top: 0;
+            backdrop-filter: blur(10px);
         }
 
         table tr:nth-child(even) {
-            background: #f9f9f9;
+            background: rgba(255, 255, 255, 0.2);
         }
 
         table tr:hover {
-            background: #ffe5e5;
-        }
-
-        img {
-            max-width: 100%;
-            height: auto;
-            margin-top: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        footer {
-            margin-top: 20px;
-            font-size: 0.85rem;
-            color: #888;
-        }
-
-        /* Media Queries for Responsiveness */
-        @media (max-width: 768px) {
-            input[type="text"] {
-                width: 100%;
-                margin: 10px 0;
-            }
-
-            button {
-                width: 100%;
-            }
-
-            table th, table td {
-                font-size: 0.9rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 2rem;
-            }
-
-            h3 {
-                font-size: 1.2rem;
-            }
+            background: rgba(255, 255, 255, 0.3);
         }
     </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Count emotions from table data
+            const emotionCells = Array.from(document.querySelectorAll('td:nth-child(3)'));
+            const emotionCounts = {
+                Positive: 0,
+                Neutral: 0,
+                Negative: 0
+            };
+
+            emotionCells.forEach(cell => {
+                const emotion = cell.textContent.trim();
+                if (emotionCounts.hasOwnProperty(emotion)) {
+                    emotionCounts[emotion]++;
+                }
+            });
+
+            // Get chart contexts
+            const ctxBar = document.getElementById("barChart").getContext("2d");
+            const ctxPie = document.getElementById("pieChart").getContext("2d");
+
+            // Common chart data
+            const chartData = {
+                labels: ["Positive", "Neutral", "Negative"],
+                datasets: [{
+                    data: [emotionCounts.Positive, emotionCounts.Neutral, emotionCounts.Negative],
+                    backgroundColor: [
+                        "rgba(255, 105, 180, 0.7)",
+                        "rgba(255, 182, 193, 0.8)",
+                        "rgba(255, 20, 147, 0.9)"
+                    ],
+                    borderWidth: 1
+                }]
+            };
+
+            // Bar Chart
+            new Chart(ctxBar, {
+                type: "bar",
+                data: chartData,
+                options: {
+                    plugins: {
+                        legend: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Sentiment Distribution',
+                            color: '#333'
+                        }
+                    },
+                    scales: {
+                        x: { 
+                            ticks: { color: '#333' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        },
+                        y: { 
+                            ticks: { color: '#333' },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                        }
+                    }
+                }
+            });
+
+            // Pie Chart
+            new Chart(ctxPie, {
+                type: "pie",
+                data: chartData,
+                options: {
+                    plugins: {
+                        legend: { 
+                            labels: { color: '#333' },
+                            position: 'bottom'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Sentiment Percentage',
+                            color: '#333'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 </head>
 <body>
+    
     <div class="container">
         <h1>Sentiment Analysis</h1>
         <form method="POST">
@@ -162,12 +139,13 @@
             <input type="text" name="youtube_link" placeholder="Enter YouTube Link">
             <button type="submit">Analyze</button>
         </form>
-        
-        {% if charts %}
-            <h3>Results</h3>
-            <img src="{{ charts }}">
 
-            <h3>Comments with Emotions</h3>
+        <div class="chart-container">
+            <canvas id="barChart"></canvas>
+            <canvas id="pieChart"></canvas>
+        </div>
+
+        <div class="table-container">
             <table>
                 <thead>
                     <tr>
@@ -186,10 +164,7 @@
                     {% endfor %}
                 </tbody>
             </table>
-        {% endif %}
-        <footer>
-            &copy; 2025 | Thank You For Using | Give Feedback To kailainathan2006@gmail.com
-        </footer>
+        </div>
     </div>
 </body>
 </html>
