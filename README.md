@@ -39,3 +39,7 @@ Create and activate a virtual environment to isolate dependencies.
 
         python manage.py runserver
       Open your browser and navigate to http://127.0.0.1:8000/ to view your app.
+
+
+
+thank you if you see this 
