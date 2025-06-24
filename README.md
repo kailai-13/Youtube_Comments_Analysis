@@ -12,7 +12,7 @@ To Run It Follow The Following Steps
 
 1. Clone the Repository:
 
-        git clone https://github.com/kailai-13/Youtube_Comments_Analysis/
+        git clone  https://github.com/kailai-13/Youtube_Comments_Analysis/
         cd Youtube_Comments_Analysis
 
 
