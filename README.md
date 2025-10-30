@@ -1,5 +1,5 @@
               # Youtube_Comments_Analysis
-It's A App Called Youtube Analysis And Hate Speech Detection.
+It's A ACalled Youtube Analysis And Hate Speech Detection.
       
 As In Name It Have Two Pages One Is Sentiment Analysis And Another Is Hate Speech Analysis
     
